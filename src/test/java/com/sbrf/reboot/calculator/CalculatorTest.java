@@ -27,6 +27,21 @@ class CalculatorTest {
     }
 
     @Test
+    void getRemainder() {
+        assertEquals(0, new Calculator().getRemainder(9, 3));
+    }
+
+    @Test
+    void getPower() {
+        assertEquals(8, new Calculator().getPower(2, 3));
+    }
+
+    @Test
+    void getSquareRoot() {
+        assertEquals(3, new Calculator().getSquareRoot(9));
+    }
+
+    @Test
     void classHasSevenMethods() {
         assertEquals(7, Calculator.class.getMethods().length - Object.class.getMethods().length);
     }
