@@ -63,4 +63,15 @@ class AccountServiceTest {
         assertEquals(2, AccountService.class.getMethods().length - Object.class.getMethods().length);
     }
 
+    @Test
+    void accountExist() {
+        long account = 1987L;
+
+        long clientId = 1L;
+
+
+        when(accountRepository.getAccountByClientId(clientId)).thenReturn(account);
+
+        assertTrue(accountService.isClientIdHasAccount(clientId, account));
+    }
 }
