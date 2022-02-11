@@ -7,7 +7,6 @@ import lombok.NonNull;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class CustomerH2Repository implements CustomerRepository {
 
@@ -28,7 +27,7 @@ public class CustomerH2Repository implements CustomerRepository {
 
     @Override
     public boolean createCustomer(@NonNull String userName, String eMail) throws SQLException {
-        stmt.execute("INSERT INTO CUSTOMER(name, eMail) VALUES(" + "'" + userName + "','" + eMail + "')");
+        stmt.executeUpdate("INSERT INTO CUSTOMER(name, eMail) VALUES(" + "'" + userName + "','" + eMail + "')");
         return true;
     }
 
