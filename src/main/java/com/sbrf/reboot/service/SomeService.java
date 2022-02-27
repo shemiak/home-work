@@ -16,22 +16,20 @@ public class SomeService {
         final Duration timeout = Duration.ofSeconds(5);
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        final Future<String> handler = executor.submit(new Callable() {
-            @Override
-            public String call() throws Exception {
+        final Future<String> handler = executor.submit(() -> {
 
-                // Реализуйте отправку отчета используя CompletableFuture
-                String reportResult = reportService.sendReport("Отправляю отчет");
+            // Реализуйте отправку отчета используя CompletableFuture
+            CompletableFuture<String> cf = CompletableFuture.supplyAsync(() ->
+                    reportService.sendReport("Отправляю отчет"));
 
-                //какой то код..
-                Thread.sleep(Duration.ofSeconds(3).toMillis());
+            //какой то код..
+            Thread.sleep(Duration.ofSeconds(3).toMillis());
 
-                if (reportResult.equals("SUCCESS")) {
-                    System.out.println("Отчет отправлен успешно");
-                }
-
-                return "some return";
+            if (cf.get().equals("SUCCESS")) {
+                System.out.println("Отчет отправлен успешно");
             }
+
+            return "some return";
         });
 
         handler.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
