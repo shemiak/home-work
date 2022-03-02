@@ -16,34 +16,39 @@ public class CustomerH2Repository implements CustomerRepository {
     private final String USER = "sa";
     private final String PASS = "";
 
-    private static Connection conn;
-    private Statement stmt;
-
-    public CustomerH2Repository() throws SQLException, ClassNotFoundException {
+    public CustomerH2Repository() throws ClassNotFoundException {
         Class.forName(JDBC_DRIVER);
-        conn = DriverManager.getConnection(DB_URL, USER, PASS);
-        stmt = conn.createStatement();
     }
 
     @Override
-    public boolean createCustomer(@NonNull String userName, String eMail) throws SQLException {
-        stmt.executeUpdate("INSERT INTO CUSTOMER(name, eMail) VALUES(" + "'" + userName + "','" + eMail + "')");
+    public boolean createCustomer(@NonNull String userName, String eMail) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        Statement stmt = conn.createStatement()) {
+            stmt.execute("CREATE TABLE CUSTOMER(id, name, eMail");
+            stmt.executeUpdate("INSERT INTO CUSTOMER(name, eMail) VALUES(" + "'" + userName + "','" + eMail + "')");
+        } catch (SQLException e) {
+            System.out.println(e.getSQLState());
+        }
         return true;
     }
 
     @Override
-    public List<Customer> getAll() throws SQLException {
+    public List<Customer> getAll() {
         List<Customer> customers = new ArrayList<>();
 
-        stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM CUSTOMER");
-        while (rs.next()) {
-            Customer customer = new Customer();
-            customer.setId(rs.getLong("id"));
-            customer.setName(rs.getString("name"));
-            customer.setEMail(rs.getString("eMail"));
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             Statement stmt = conn.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM CUSTOMER");
+            while (rs.next()) {
+                Customer customer = new Customer();
+                customer.setId(rs.getLong("id"));
+                customer.setName(rs.getString("name"));
+                customer.setEMail(rs.getString("eMail"));
 
-            customers.add(customer);
+                customers.add(customer);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getSQLState());
         }
         return customers;
     }
